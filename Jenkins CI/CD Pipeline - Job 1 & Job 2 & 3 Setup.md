@@ -396,4 +396,46 @@ Example GitHub commit:
 Merge remote-tracking branch 'origin/dev'
 ```
 
+# Completed CI Pipeline Checklist
+
+## Job 1 - CI Test
+
+✅ Jenkins job created  
+✅ GitHub repository connected  
+✅ SSH credentials configured  
+✅ GitHub webhook configured  
+✅ Push triggers Jenkins automatically  
+✅ Automated tests run successfully  
+✅ Job 1 triggers Job 2  
+
+---
+
+## Job 2 - CI Merge
+
+✅ Jenkins job created  
+✅ Dev branch connected  
+✅ Job triggered after successful Job 1 build  
+✅ SSH Agent configured  
+✅ Dev branch merged into main  
+✅ Jenkins pushed changes to GitHub main  
+✅ Merge completed successfully  
+
+---
+
+# Current Pipeline Status
+
+The Continuous Integration pipeline is complete.
+
+Next step:
+
+# Job 3 - Continuous Deployment (CD)
+
+The deployment stage will:
+
+- Copy tested code from Jenkins to AWS EC2.
+- SSH into the EC2 instance.
+- Restart the application.
+- Verify the updated application is running.
+
+
 The updated README changes appeared on the GitHub main branch.
