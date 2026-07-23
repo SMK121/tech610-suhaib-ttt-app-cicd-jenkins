@@ -173,8 +173,9 @@ Trigger only if build is stable
 
 This ensures only tested code moves to the merge stage.
 
-<br>
-Job 2 - Continuous Integration (CI) Merge
+
+
+# Job 2 - Continuous Integration (CI) Merge
 Purpose
 
 Job 2 is responsible for merging tested changes from the development branch into the main branch.
