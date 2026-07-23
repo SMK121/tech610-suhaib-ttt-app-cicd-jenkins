@@ -173,9 +173,8 @@ Trigger only if build is stable
 
 This ensures only tested code moves to the merge stage.
 
-
-
-# Job 2 - Continuous Integration (CI) Merge
+<br>
+Job 2 - Continuous Integration (CI) Merge
 Purpose
 
 Job 2 is responsible for merging tested changes from the development branch into the main branch.
@@ -284,7 +283,7 @@ Job 2 Troubleshooting
 
 Initially, the merge failed.
 
-The original command was:
+Original command:
 
 git merge dev
 
