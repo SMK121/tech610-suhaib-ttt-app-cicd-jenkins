@@ -148,7 +148,7 @@ Trigger only if build is stable
 
 This ensures only tested code moves to the merge stage.
 
-
+---
 
 # Job 2 - Continuous Integration (CI) Merge
 
@@ -388,12 +388,16 @@ Finished: SUCCESS
 
 # GitHub Result
 
+
 After successful completion, Jenkins merged the development changes into the main branch.
 
 Example GitHub commit:
 
 ```
 Merge remote-tracking branch 'origin/dev'
+
+
+The updated README changes appeared on the GitHub main branch.
 ```
 
 # Completed CI Pipeline Checklist
@@ -437,5 +441,3 @@ The deployment stage will:
 - Restart the application.
 - Verify the updated application is running.
 
-
-The updated README changes appeared on the GitHub main branch.
