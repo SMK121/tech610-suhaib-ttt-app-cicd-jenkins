@@ -13,6 +13,7 @@ The pipeline consists of two Jenkins jobs:
 
 - **Job 1: CI Test** - Runs automated tests on the latest code changes.
 - **Job 2: CI Merge** - Merges tested changes from `dev` into `main`.
+- **Job 3
 
 ---
 
@@ -44,13 +45,17 @@ GitHub Main Branch
 
 ---
 
-# Job 1 - CI Test Setup
+# Job 1 - Continuous Integration (CI) Test
 
-## Purpose
+## Overview
 
-The purpose of Job 1 is to automatically test changes before they are merged into the main branch.
+Job 1 is responsible for Continuous Integration (CI).
 
-If the tests fail, the merge process does not continue.
+The purpose of this job is to automatically test code changes before they are merged into the main branch.
+
+When a developer pushes code changes to GitHub, a webhook triggers Jenkins. Jenkins then downloads the latest code and runs automated tests.
+
+If all tests pass successfully, Job 2 is triggered to merge the changes.
 
 ---
 
@@ -62,7 +67,29 @@ Suhaib-TTT-Job1-CI-Test
 
 ---
 
-## Source Code Management
+## Pipeline Flow
+
+
+Developer
+|
+| git push
+v
+GitHub Repository
+|
+| Webhook Trigger
+v
+Jenkins Job 1
+(CI Test)
+|
+| Tests Passed
+v
+Jenkins Job 2
+(CI Merge)
+
+
+---
+
+# Source Code Management
 
 Repository:
 
@@ -82,15 +109,15 @@ Credentials:
 suhaib-jenkins-2gh-ttt-app
 
 
-The SSH credential allows Jenkins to securely access the GitHub repository.
+The SSH credential allows Jenkins to securely authenticate with GitHub and access the repository.
 
 ---
 
-## GitHub Webhook Configuration
+# GitHub Webhook Setup
 
-A GitHub webhook was configured so that a push event automatically triggers Jenkins.
+A GitHub webhook was configured to automatically trigger Jenkins when code is pushed.
 
-Flow:
+Workflow:
 
 
 GitHub Push
@@ -99,108 +126,162 @@ v
 Webhook
 |
 v
-Jenkins Job 1
+Jenkins Job 1 Starts
 
 
-Testing was completed by pushing changes to GitHub and confirming Jenkins started automatically.
-
-Example:
+Example Jenkins output:
 
 
 Started by GitHub push by SMK121
 
 
+This confirms that GitHub successfully communicated with Jenkins.
+
 ---
 
-## Build Steps
+# Build Steps
 
-Job 1 runs the application tests.
+The Jenkins build runs the application tests.
 
-Example:
+Commands used:
 
 ```bash
 cd app
 npm ci
 npm test
 
-The job installs dependencies and runs the automated test suite.
+Explanation:
 
-Job 1 Test Result
+npm ci
 
-Successful test execution:
+Installs the project dependencies using the package lock file.
 
-# tests 111
-# pass 105
-# fail 0
-# skipped 6
+npm test
 
-Result:
+Runs the automated test suite to check that the application works correctly.
 
-Finished: SUCCESS
-Job 2 - CI Merge Setup
-Purpose
 
-Job 2 automatically merges tested changes from the development branch into the main branch.
 
-This prevents untested code from being merged into production.
+# Jenkins Job 2 - CI Merge Setup
 
-Jenkins Job Name
+```markdown
+# Job 2 - Continuous Integration (CI) Merge
+
+## Overview
+
+Job 2 is responsible for merging tested changes from the development branch into the main branch.
+
+This ensures that only code which has passed the CI testing stage is merged into the main branch.
+
+---
+
+## Jenkins Job Name
+
+
 Suhaib-TTT-Job2-CI-Merge
-Source Code Management
+
+
+---
+
+# Purpose
+
+Job 2 performs the following actions:
+
+1. Fetches the latest GitHub branches.
+2. Switches to the main branch.
+3. Merges changes from dev into main.
+4. Pushes the updated main branch back to GitHub.
+
+---
+
+# Source Code Management
 
 Repository:
 
+
 git@github.com:SMK121/tech610-suhaib-ttt-app-cicd-jenkins.git
+
 
 Branch:
 
+
 */dev
+
 
 Credentials:
 
+
 suhaib-jenkins-2gh-ttt-app
-Triggering Job 2
 
-Job 1 was configured with a post-build action:
 
-Build other projects
+The job checks out the development branch because this is the branch containing the tested changes.
 
-Selected project:
+---
 
-Suhaib-TTT-Job2-CI-Merge
+# Trigger Configuration
 
-Trigger condition:
+Job 2 is triggered automatically by Job 1.
+
+Flow:
+
+
+Job 1
+(CI Tests Passed)
+|
+v
+Job 2
+(CI Merge)
+
+
+Configuration:
+
+
+Build after other projects are built
+
+
+Project:
+
+
+Suhaib-TTT-Job1-CI-Test
+
+
+Condition:
+
 
 Trigger only if build is stable
 
-This means Job 2 only runs when Job 1 tests successfully.
 
-Job 2 Build Environment
+---
+
+# Build Environment
 
 Enabled:
 
-Add timestamps to Console Output
 
-This improves Jenkins logs by showing when each step runs.
+SSH Agent
 
-SSH Authentication
-
-SSH Agent was configured:
 
 Credential:
 
+
 suhaib-jenkins-2gh-ttt-app
-(To Read Write To Repo)
 
-This allows Jenkins to:
 
-Clone the repository
-Fetch branches
-Push merged changes back to GitHub
-Job 2 Build Script
+Purpose:
 
-The following shell script was used:
+Allows Jenkins to:
 
+- Authenticate with GitHub
+- Fetch branches
+- Push merged changes back to GitHub
+
+---
+
+# Build Script
+
+The following shell script is used:
+
+```bash
 echo "Fetching latest branches"
 git fetch origin
 
@@ -213,55 +294,61 @@ git merge origin/dev
 echo "Pushing merged code to GitHub main branch"
 git push origin main
 Script Explanation
-Fetch latest branches
+Fetch Latest Branches
 git fetch origin
 
-Downloads the latest branch information from GitHub.
+Downloads the latest information from GitHub.
 
-Switch to main
+Switch to Main Branch
 git checkout main
 
-Moves Jenkins to the main branch.
+Moves Jenkins to the main branch before merging.
 
-Merge dev into main
+Merge Development Changes
 git merge origin/dev
 
-Combines the tested development changes into the main branch.
+Merges the remote development branch into main.
 
-Push changes
+origin/dev is used because Jenkins only had the remote branch available.
+
+Push Updated Main Branch
 git push origin main
 
-Uploads the updated main branch back to GitHub.
+Uploads the merged code back to GitHub.
 
-Job 2 Troubleshooting
+Troubleshooting
 
-Initially the merge failed because Jenkins only had:
+Initially the merge failed.
+
+Original command:
+
+git merge dev
+
+Error:
+
+merge: dev - not something we can merge
+
+Reason:
+
+Jenkins had:
 
 origin/dev
 
-available, not a local:
+but did not have a local:
 
 dev
 
 branch.
 
-The original command:
-
-git merge dev
-
-caused:
-
-merge: dev - not something we can merge
-
-The fix was changing it to:
+The command was changed to:
 
 git merge origin/dev
 
-This successfully merged the remote development branch.
+After this change, the merge completed successfully.
 
-Final Job 2 Result
+Successful Job 2 Output
 
-Successful output:
+Example:
 
 Fetching latest branches
 
@@ -269,21 +356,30 @@ Switching to main branch
 
 Merging dev branch into main
 
-git merge origin/dev
+Already up to date.
 
-git push origin main
+Pushing merged code to GitHub main branch
+
+Everything up-to-date
 
 Finished: SUCCESS
-Final CI Pipeline Result
+GitHub Result
 
-Completed successfully:
+After successful completion, the merged code appeared on the GitHub main branch.
 
-✅ GitHub webhook configured
-✅ Git push triggers Jenkins
-✅ Job 1 runs automatically
-✅ Automated tests pass
+Example:
+
+Merge remote-tracking branch 'origin/dev'
+
+This confirms Jenkins successfully merged dev changes into main.
+
+Job 2 Completion Checklist
+
 ✅ Job 1 triggers Job 2
-✅ Job 2 merges dev into main
-✅ Jenkins pushes merged code to GitHub main branch
+✅ Dev branch changes are detected
+✅ Jenkins fetches latest branches
+✅ Dev branch merges into main
+✅ Jenkins pushes updated main branch
+✅ CI Merge process completed successfully
 
-The Continuous Integration pipeline is now complete.
+
