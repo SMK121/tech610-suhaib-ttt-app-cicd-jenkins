@@ -1,46 +1,3 @@
-# Tic Tac Toe App - Jenkins CI/CD
-
-## Overview
-
-This project demonstrates a Jenkins CI/CD pipeline for a Tic Tac Toe application.
-
-The pipeline automates the process of testing and merging code changes using Jenkins.
-
-The CI pipeline consists of two Jenkins jobs:
-
-- **Job 1 - CI Test:** Automatically runs application tests when changes are pushed to GitHub.
-- **Job 2 - CI Merge:** Merges tested changes from the `dev` branch into the `main` branch.
-
----
-
-# CI/CD Pipeline Architecture
-
-Insert diagram here.
-
-
-Developer
-|
-| git push (dev branch)
-v
-GitHub Repository
-|
-| Webhook Trigger
-v
-Jenkins Job 1
-(CI Test)
-|
-| Tests Pass
-v
-Jenkins Job 2
-(CI Merge)
-|
-| Merge dev → main
-v
-GitHub Main Branch
-
-
----
-
 # Job 1 - Continuous Integration (CI) Test
 
 ## Purpose
@@ -62,9 +19,9 @@ When a developer pushes code changes to GitHub:
 
 ## Job Name
 
-
+```
 Suhaib-TTT-Job1-CI-Test
-
+```
 
 ---
 
@@ -72,21 +29,21 @@ Suhaib-TTT-Job1-CI-Test
 
 Repository:
 
-
+```
 git@github.com:SMK121/tech610-suhaib-ttt-app-cicd-jenkins.git
-
+```
 
 Branch:
 
-
+```
 main
-
+```
 
 Credentials:
 
-
+```
 suhaib-jenkins-2gh-ttt-app
-
+```
 
 The SSH credential allows Jenkins to securely authenticate with GitHub.
 
@@ -98,21 +55,21 @@ A GitHub webhook was configured to automatically trigger Jenkins when code is pu
 
 Pipeline trigger flow:
 
-
+```
 Developer Push
-|
-v
+      |
+      v
 GitHub Webhook
-|
-v
+      |
+      v
 Jenkins Job 1
-
+```
 
 Example Jenkins output:
 
-
+```
 Started by GitHub push by SMK121
-
+```
 
 This confirms that GitHub successfully triggered Jenkins.
 
@@ -144,7 +101,7 @@ The automated tests completed successfully.
 
 Example output:
 
-```text
+```
 # tests 111
 # pass 105
 # fail 0
@@ -153,7 +110,7 @@ Example output:
 
 Result:
 
-```text
+```
 Finished: SUCCESS
 ```
 
@@ -167,7 +124,9 @@ After Job 1 completes successfully, it automatically triggers Job 2.
 
 Configured using:
 
-**Post-build Actions**
+```
+Post-build Actions
+```
 
 Option:
 
@@ -189,7 +148,7 @@ Trigger only if build is stable
 
 This ensures only tested code moves to the merge stage.
 
----
+
 
 # Job 2 - Continuous Integration (CI) Merge
 
@@ -343,7 +302,7 @@ git merge origin/dev
 
 Merges the remote development branch into main.
 
-`origin/dev` is used because Jenkins has the remote branch available.
+`origin/dev` is used because Jenkins only has the remote branch available.
 
 ---
 
@@ -373,7 +332,7 @@ Error:
 merge: dev - not something we can merge
 ```
 
-## Cause
+Cause:
 
 Jenkins only had:
 
@@ -393,7 +352,7 @@ branch.
 
 ---
 
-## Fix
+# Fix
 
 The command was changed to:
 
@@ -438,46 +397,3 @@ Merge remote-tracking branch 'origin/dev'
 ```
 
 The updated README changes appeared on the GitHub main branch.
-
----
-
-# Completed CI Pipeline Checklist
-
-## Job 1 - CI Test
-
-✅ Jenkins job created  
-✅ GitHub repository connected  
-✅ SSH credentials configured  
-✅ GitHub webhook configured  
-✅ Push triggers Jenkins automatically  
-✅ Automated tests run successfully  
-✅ Job 1 triggers Job 2  
-
----
-
-## Job 2 - CI Merge
-
-✅ Jenkins job created  
-✅ Dev branch connected  
-✅ Job triggered after successful Job 1 build  
-✅ SSH Agent configured  
-✅ Dev branch merged into main  
-✅ Jenkins pushed changes to GitHub main  
-✅ Merge completed successfully  
-
----
-
-# Current Pipeline Status
-
-The Continuous Integration pipeline is complete.
-
-Next step:
-
-# Job 3 - Continuous Deployment (CD)
-
-The deployment stage will:
-
-- Copy tested code from Jenkins to AWS EC2.
-- SSH into the EC2 instance.
-- Restart the application.
-- Verify the updated application is running.
