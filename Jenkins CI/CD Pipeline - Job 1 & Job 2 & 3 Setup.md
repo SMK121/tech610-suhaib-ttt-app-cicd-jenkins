@@ -126,125 +126,178 @@ Jenkins runs the following commands:
 cd app
 npm ci
 npm test
-npm ci
+```
+
+## npm ci
 
 Installs project dependencies using the package lock file.
 
-npm test
+## npm test
 
 Runs the automated test suite to verify the application works correctly.
 
-Job 1 Test Result
+---
+
+# Job 1 Test Result
 
 The automated tests completed successfully.
 
 Example output:
 
+```text
 # tests 111
 # pass 105
 # fail 0
 # skipped 6
+```
 
 Result:
 
+```text
 Finished: SUCCESS
+```
 
 This confirms the application passed the CI testing stage.
 
-Triggering Job 2
+---
+
+# Triggering Job 2
 
 After Job 1 completes successfully, it automatically triggers Job 2.
 
 Configured using:
 
-Post-build Actions
+**Post-build Actions**
 
 Option:
 
+```
 Build other projects
+```
 
 Project:
 
+```
 Suhaib-TTT-Job2-CI-Merge
+```
 
 Condition:
 
+```
 Trigger only if build is stable
+```
 
 This ensures only tested code moves to the merge stage.
 
-<br>
-Job 2 - Continuous Integration (CI) Merge
-Purpose
+---
+
+# Job 2 - Continuous Integration (CI) Merge
+
+## Purpose
 
 Job 2 is responsible for merging tested changes from the development branch into the main branch.
 
 This creates a controlled workflow where:
 
-Developers work on the dev branch.
-Jenkins tests the changes.
-Successful changes are merged into main.
-Jenkins Job Configuration
-Job Name
+- Developers work on the `dev` branch.
+- Jenkins tests the changes.
+- Successful changes are merged into `main`.
+
+---
+
+# Jenkins Job Configuration
+
+## Job Name
+
+```
 Suhaib-TTT-Job2-CI-Merge
-Source Code Management
+```
+
+---
+
+# Source Code Management
 
 Repository:
 
+```
 git@github.com:SMK121/tech610-suhaib-ttt-app-cicd-jenkins.git
+```
 
 Branch:
 
+```
 */dev
+```
 
 Credentials:
 
+```
 suhaib-jenkins-2gh-ttt-app
+```
 
 The job checks out the development branch because this contains the changes that passed testing.
 
-Job 2 Trigger Configuration
+---
+
+# Job 2 Trigger Configuration
 
 Job 2 is triggered automatically after Job 1 succeeds.
 
 Flow:
 
+```
 Job 1
 (CI Tests Passed)
         |
         v
 Job 2
 (CI Merge)
+```
 
 Configuration:
 
+```
 Build after other projects are built
+```
 
 Upstream project:
 
+```
 Suhaib-TTT-Job1-CI-Test
+```
 
 Condition:
 
+```
 Trigger only if build is stable
-SSH Agent Configuration
+```
+
+---
+
+# SSH Agent Configuration
 
 SSH Agent was enabled in Jenkins.
 
 Credential used:
 
+```
 suhaib-jenkins-2gh-ttt-app
 (To Read Write To Repo)
+```
 
 This allows Jenkins to:
 
-Access GitHub securely.
-Fetch branches.
-Push merged changes back to GitHub.
-Job 2 Build Script
+- Access GitHub securely.
+- Fetch branches.
+- Push merged changes back to GitHub.
+
+---
+
+# Job 2 Build Script
 
 The following shell script was added:
 
+```bash
 echo "Fetching latest branches"
 git fetch origin
 
@@ -256,66 +309,107 @@ git merge origin/dev
 
 echo "Pushing merged code to GitHub main branch"
 git push origin main
-Script Explanation
-Fetch Latest Branches
+```
+
+---
+
+# Script Explanation
+
+## Fetch Latest Branches
+
+```bash
 git fetch origin
+```
 
 Downloads the latest branch information from GitHub.
 
-Switch to Main Branch
+---
+
+## Switch to Main Branch
+
+```bash
 git checkout main
+```
 
 Moves Jenkins to the main branch before performing the merge.
 
-Merge Dev into Main
+---
+
+## Merge Dev into Main
+
+```bash
 git merge origin/dev
+```
 
 Merges the remote development branch into main.
 
-origin/dev is used because Jenkins has the remote branch available.
+`origin/dev` is used because Jenkins has the remote branch available.
 
-Push Changes
+---
+
+## Push Changes
+
+```bash
 git push origin main
+```
 
 Uploads the updated main branch back to GitHub.
 
-Job 2 Troubleshooting
+---
+
+# Job 2 Troubleshooting
 
 Initially, the merge failed.
 
 Original command:
 
+```bash
 git merge dev
+```
 
 Error:
 
+```
 merge: dev - not something we can merge
-Cause
+```
+
+## Cause
 
 Jenkins only had:
 
+```
 origin/dev
+```
 
 available.
 
 It did not have a local:
 
+```
 dev
+```
 
 branch.
 
-Fix
+---
+
+## Fix
 
 The command was changed to:
 
+```bash
 git merge origin/dev
+```
 
 After this change, the merge completed successfully.
 
-Successful Job 2 Result
+---
+
+# Successful Job 2 Result
 
 Example Jenkins output:
 
+```
 Fetching latest branches
 
 Switching to main branch
@@ -329,48 +423,61 @@ Pushing merged code to GitHub main branch
 Everything up-to-date
 
 Finished: SUCCESS
-GitHub Result
+```
+
+---
+
+# GitHub Result
 
 After successful completion, Jenkins merged the development changes into the main branch.
 
 Example GitHub commit:
 
+```
 Merge remote-tracking branch 'origin/dev'
+```
 
 The updated README changes appeared on the GitHub main branch.
 
-Completed CI Pipeline Checklist
-Job 1 - CI Test
+---
 
-✅ Jenkins job created
-✅ GitHub repository connected
-✅ SSH credentials configured
-✅ GitHub webhook configured
-✅ Push triggers Jenkins automatically
-✅ Automated tests run successfully
-✅ Job 1 triggers Job 2
+# Completed CI Pipeline Checklist
 
-Job 2 - CI Merge
+## Job 1 - CI Test
 
-✅ Jenkins job created
-✅ Dev branch connected
-✅ Job triggered after successful Job 1 build
-✅ SSH Agent configured
-✅ Dev branch merged into main
-✅ Jenkins pushed changes to GitHub main
-✅ Merge completed successfully
+✅ Jenkins job created  
+✅ GitHub repository connected  
+✅ SSH credentials configured  
+✅ GitHub webhook configured  
+✅ Push triggers Jenkins automatically  
+✅ Automated tests run successfully  
+✅ Job 1 triggers Job 2  
 
-Current Pipeline Status
+---
+
+## Job 2 - CI Merge
+
+✅ Jenkins job created  
+✅ Dev branch connected  
+✅ Job triggered after successful Job 1 build  
+✅ SSH Agent configured  
+✅ Dev branch merged into main  
+✅ Jenkins pushed changes to GitHub main  
+✅ Merge completed successfully  
+
+---
+
+# Current Pipeline Status
 
 The Continuous Integration pipeline is complete.
 
 Next step:
 
-Job 3 - Continuous Deployment (CD)
+# Job 3 - Continuous Deployment (CD)
 
 The deployment stage will:
 
-Copy tested code from Jenkins to AWS EC2.
-SSH into the EC2 instance.
-Restart the application.
-Verify the updated application is running.
+- Copy tested code from Jenkins to AWS EC2.
+- SSH into the EC2 instance.
+- Restart the application.
+- Verify the updated application is running.
